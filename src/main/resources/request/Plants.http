@@ -1,0 +1,26 @@
+#get all plants
+GET localhost:7007/api/plant
+
+###
+
+#get plant with id = 1
+GET localhost:7007/api/plant/1
+
+###
+
+#add a new plant to dataase
+POST localhost:7007/api/plant
+Content-Type: application/json
+
+{
+  "name": "Tulip",
+  "plantType": "Spring Bloom",
+  "price": 180.00,
+  "maxHeight": 300
+}
+
+###
+
+#good fejl med "plant/Rose
+# dårlig fejl med "type/Rose" why?
+GET localhost:7007/api/plant/type/Rose
