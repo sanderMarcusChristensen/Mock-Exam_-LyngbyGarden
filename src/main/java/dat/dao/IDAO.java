@@ -11,5 +11,9 @@ public interface IDAO<T> {
     T getById(Long id);
     List<T> getByType(String type);
     T add(PlantDTO dto);
+    void delete(Long id);
+
+    List<T> shortPlants();
+    List<T> sortedPlants();
 
 }

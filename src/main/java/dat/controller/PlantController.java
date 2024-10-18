@@ -12,6 +12,7 @@ import java.util.List;
 public class PlantController implements IController {
 
     private PlantDAO dao;
+    private String plantType = "Rose";
 
     public PlantController(PlantDAO dao) {
         this.dao = dao;
@@ -77,7 +78,7 @@ public class PlantController implements IController {
     public void getPlantByType(Context ctx) {
 
         try {
-            List<PlantDTO> plants = dao.getByType("Rose");
+            List<PlantDTO> plants = dao.getByType(plantType);
 
             if (plants != null) {
                 ctx.json(plants);
@@ -89,5 +90,59 @@ public class PlantController implements IController {
             throw new ApiException(500, "invalid input ");
         }
     }
+
+    @Override
+    public void getShortPlants(Context ctx) {
+
+        try{
+            List<PlantDTO> dtos = dao.shortPlants();
+
+            if(dtos != null){
+                ctx.json(dtos);
+                ctx.status(200);
+            } else {
+                throw new ApiException(400, "Failed to get all plants");
+            }
+        } catch (Exception e){
+            throw new ApiException(500, "invalid input ");
+        }
+
+    }
+
+    @Override
+    public void getSortedPlants(Context ctx) {
+
+        try{
+            List<PlantDTO> dtos = dao.sortedPlants();
+            if(dtos != null){
+                ctx.json(dtos);
+                ctx.status(200);
+            } else{
+                throw new ApiException(400, "Failed to get all plants");
+            }
+        } catch (Exception e){
+            throw new ApiException(500, "invalid input ");
+        }
+
+    }
+
+    @Override
+    public void getPlantNames(Context ctx) {
+        try{
+            List<String> names = dao.plantNames();
+            if(names != null){
+                ctx.json(names);
+                ctx.status(200);
+
+            } else{
+                throw new ApiException(400, "Failed to get all plants");
+            }
+        } catch (Exception e){
+            throw new ApiException(500, "invalid input ");
+        }
+
+    }
+
+
 }
 

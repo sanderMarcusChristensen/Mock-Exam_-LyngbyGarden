@@ -24,3 +24,8 @@ Content-Type: application/json
 #good fejl med "plant/Rose
 # dårlig fejl med "type/Rose" why?
 GET localhost:7007/api/plant/type/Rose
+
+###
+
+#DONT WORK
+GET http://localhost:7007/api/plant/names

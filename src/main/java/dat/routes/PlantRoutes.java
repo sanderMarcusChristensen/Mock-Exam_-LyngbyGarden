@@ -23,6 +23,14 @@ public EndpointGroup getPlantRoutes(){
             get("/type/{type}", plantController :: getPlantByType);
             post("/",plantController :: addPlant);
 
+
+            // needs to be in a reseller controller
+            //Dont work
+
+            get("/{names}",plantController :: getPlantNames);
+            get("/short",plantController :: getShortPlants);
+            get("/sorted",plantController :: getSortedPlants);
+
         };
 
 }

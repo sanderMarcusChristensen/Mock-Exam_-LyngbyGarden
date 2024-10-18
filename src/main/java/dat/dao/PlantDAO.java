@@ -5,6 +5,7 @@ import dat.entities.Plant;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,7 @@ public class PlantDAO implements IDAO<PlantDTO> {
 
     private EntityManagerFactory emf;
 
-    public PlantDAO(EntityManagerFactory emf){
+    public PlantDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
 
@@ -40,10 +41,10 @@ public class PlantDAO implements IDAO<PlantDTO> {
 
     @Override
     public PlantDTO getById(Long id) {
-        try(EntityManager em = emf.createEntityManager()) {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Plant plant = em.find(Plant.class, id);
-            if(plant != null){
+            if (plant != null) {
                 return new PlantDTO(plant);
             }
             em.getTransaction().commit();
@@ -89,7 +90,7 @@ public class PlantDAO implements IDAO<PlantDTO> {
 
         Plant plant = dto.getPlantAsEntity();
 
-        try(EntityManager em = emf.createEntityManager()){
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             em.persist(plant);
             em.getTransaction().commit();
@@ -97,12 +98,84 @@ public class PlantDAO implements IDAO<PlantDTO> {
             dto.setId(plant.getId());
             return dto;
 
-        } catch (PersistenceException e){
+        } catch (PersistenceException e) {
             e.printStackTrace();
             System.out.println("Could not add/create a new plant form dao in database" + e.getMessage());
             return null;
         }
 
+    }
+
+    @Override
+    public void delete(Long id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            Plant plant = em.find(Plant.class, id);
+            em.remove(plant);
+            em.getTransaction().commit();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public List<PlantDTO> shortPlants() {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            List<PlantDTO> plants = getAll();
+
+            plants = plants.stream()
+                    .filter(plant -> plant.getMaxHeight() <= 100)
+                    .toList();
+
+            em.getTransaction().commit();
+            return plants;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<PlantDTO> sortedPlants() {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            List<PlantDTO> plants = getAll();
+
+            plants = plants.stream()
+                    .sorted(Comparator.comparing(PlantDTO::getName))
+                    .toList();
+
+            em.getTransaction().commit();
+            return plants;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<String> plantNames() {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            List<PlantDTO> plants = getAll();
+
+            List<String> plantNames = plants.stream()
+                    .map(PlantDTO::getName)
+                    .toList();
+
+            em.getTransaction().commit();
+            return plantNames;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }

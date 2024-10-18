@@ -6,6 +6,11 @@ public class Main {
     public static void main(String[] args) {
         AppConfig.startServer();
 
-        //mangler kun ResellerDTO par og andre små metoder
+
+        // mangle:
+            //at få plants ind i reseller
+            // få endpoints til at virke
+
+
     }
 }

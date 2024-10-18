@@ -3,6 +3,7 @@ package dat.config;
 
 
 import dat.entities.Plant;
+import dat.entities.Reseller;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -50,6 +51,7 @@ public class HibernateConfig {
     // TODO: IMPORTANT: Add Entity classes here for them to be registered with Hibernate
     private static void getAnnotationConfiguration(Configuration configuration) {
         configuration.addAnnotatedClass(Plant.class);
+        configuration.addAnnotatedClass(Reseller.class);
     }
 
     private static EntityManagerFactory createEMF(boolean forTest, String DBName) {

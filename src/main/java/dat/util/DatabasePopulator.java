@@ -2,15 +2,21 @@ package dat.util;
 
 import dat.config.HibernateConfig;
 import dat.dao.PlantDAO;
+import dat.dao.ResellerDAO;
 import dat.dto.PlantDTO;
+import dat.dto.ResellerDTO;
+import dat.entities.Plant;
+import dat.entities.Reseller;
 import jakarta.persistence.EntityManagerFactory;
 
 public class DatabasePopulator {
 
     private final PlantDAO plantDAO;
+    private final ResellerDAO resellerDAO;
 
     public DatabasePopulator(EntityManagerFactory emf) {
         this.plantDAO = new PlantDAO(emf);
+        this.resellerDAO = new ResellerDAO(emf);
     }
 
     public void populateDatabase() {
@@ -23,7 +29,14 @@ public class DatabasePopulator {
         plantDAO.add(plant2);
         plantDAO.add(plant3);
 
-        System.out.println("Dummy plants added to the database.");
+        ResellerDTO r1 = new ResellerDTO(null,"LyngbyPlantecenter","Fiskeovvej 18","33212334");
+        ResellerDTO r2 = new ResellerDTO(null,"Glostrup","<Tværvej 39 >","32233232");
+        ResellerDTO r3 = new ResellerDTO(null,"Holbæk","Stenhusvej 49","594435093");
+
+        resellerDAO.create(r1);
+        resellerDAO.create(r2);
+        resellerDAO.create(r3);
+
     }
 
     // Add a static main method to allow running this class standalone
