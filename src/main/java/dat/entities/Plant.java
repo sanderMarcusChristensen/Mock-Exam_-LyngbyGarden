@@ -1,37 +1,38 @@
 package dat.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import dat.dto.PlantDTO;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity // Entities get this tag
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 @Data
 @NoArgsConstructor
-
-
+@AllArgsConstructor
+@Builder
 public class Plant {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // generate a id in database
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generate ID
+    private Long id;            // Unique identifier
+    private String plantType;   // Type of the plant
+    private String name;        // Name of the plant
+    private double price;       // Price of the plant
+    private int maxHeight;      // Maximum height of the plant in cm
 
-    private String plantType;
-    private String name;
-    private double price;
-    private int maxHeight;
+    @ManyToMany(mappedBy = "plants", cascade = CascadeType.ALL) // Bidirectional many-to-many relationship
+    private List<Reseller> resellers = new ArrayList<>();
 
-    @Builder // constructor get's build tag
-    public Plant(Long id ,String plantType, String name, double price, int maxHeight) {
-        this.id = id;
-        this.plantType = plantType;
-        this.name = name;
-        this.price = price;
-        this.maxHeight = maxHeight;
+    // Constructor to create Plant from PlantDTO
+    public Plant(PlantDTO dto) {
+        this.id = dto.getId();
+        this.plantType = dto.getPlantType();
+        this.name = dto.getName();
+        this.maxHeight = dto.getMaxHeight();
+        this.price = dto.getPrice();
     }
 }

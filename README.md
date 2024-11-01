@@ -1,4 +1,5 @@
-# Task 1 endpoint test MOCK: 
+# Task 1: Build a REST Service
+## Mock - data - endpoint test in http-fil: 
 ### 1. GET http://localhost:7007/api/mock (get all )
 
 HTTP/1.1 200 OK
@@ -86,6 +87,93 @@ Response file saved.
 > 2024-11-01T152959.200.json
 
 Response code: 200 (OK); Time: 314ms (314 ms); Content length: 78 bytes (78 B)
+
+
+# Task 2: REST Errorhandling
+
+- 200 ok = Successfully
+- 201 = Successfully created 
+- 400 = Bad request 
+- 401 = Unauthorized (Needs to be admin to)
+- 404 = Not found 
+- 500 : Server error 
+
+| HTTP method | REST Ressource          | Exceptions and status(es)    |
+|-------------|-------------------------|------------------------------|
+| GET         | `/api/mock`             | 200, 500                     |
+| GET         | `/api/mock/{id}`        | 200, 404 (can't fin id), 500 |
+| GET         | `/api/mock/type/{type}` | 200, 400, 404, 500           |
+| POST        | `/api/mock`             | 201, 400, 401, 500           |
+
+
+GET http://localhost:7007/api/mock/10
+
+HTTP/1.1 400 Bad Request
+Date: Fri, 01 Nov 2024 16:14:27 GMT
+Content-Type: application/json
+Content-Length: 58
+
+{
+"id": [
+{
+"message": "Not a valid id",
+"args": {},
+"value": 10
+}
+]
+}
+Response file saved.
+> 2024-11-01T171428.400.json
+
+Response code: 400 (Bad Request); Time: 526ms (526 ms); Content length: 58 bytes (58 B)
+
+GET http://localhost:7007/api/mock/type/SomthingNotThere
+
+HTTP/1.1 404 Not Found
+Date: Fri, 01 Nov 2024 16:16:07 GMT
+Content-Type: application/json
+Content-Length: 62
+
+{
+"status": 404,
+"message": "plant with that plantType not found"
+}
+Response file saved.
+> 2024-11-01T171607.404.json
+
+Response code: 404 (Not Found); Time: 14ms (14 ms); Content length: 62 bytes (62 B)
+
+
+#### request: POST localhost:7007/api/mock
+Content-Type: application/json
+
+{
+"name": "",
+"plantType": "Spring Bloom",
+"price": 180.00,
+"maxHeight": 200
+}
+
+#### response : POST http://localhost:7007/api/mock
+
+HTTP/1.1 400 Bad Request
+Date: Fri, 01 Nov 2024 16:22:06 GMT
+Content-Type: application/json
+Content-Length: 46
+
+{
+"status": 400,
+"message": "Plant name is empty"
+}
+Response file saved.
+> 2024-11-01T172206.400.json
+
+Response code: 400 (Bad Request); Time: 16ms (16 ms); Content length: 46 bytes (46 B)
+
+# Task 3: Streams and Generics
+
+3.4: Stream API is inspired by functional programming
+
 
 
 

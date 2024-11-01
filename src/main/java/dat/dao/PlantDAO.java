@@ -1,13 +1,16 @@
 package dat.dao;
 
 import dat.dto.PlantDTO;
+import dat.dto.ResellerDTO;
 import dat.entities.Plant;
-import jakarta.persistence.*;
+import dat.entities.Reseller;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PlantDAO implements IDAO<PlantDTO> {
 
@@ -20,90 +23,50 @@ public class PlantDAO implements IDAO<PlantDTO> {
     @Override
     public List<PlantDTO> getAll() {
         try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            // You don't need a transaction for read operations (SELECT queries)
-            List<Plant> plantsList = em.createQuery("SELECT h FROM Plant h", Plant.class).getResultList();
-
-            // Convert the list of Plant entities to a list of PlantDTOs
-            List<PlantDTO> plants = plantsList.stream()
-                    .map(PlantDTO::new) // map each Plant to a PlantDTO
-                    .collect(Collectors.toList()); // collect results into a List
-            em.getTransaction().commit();
-
-            return plants;
-
-        } catch (Exception e) {
-            e.printStackTrace(); // log the exception
+            TypedQuery<Plant> query = em.createQuery("SELECT p FROM Plant p", Plant.class);
+            List<Plant> plants = query.getResultList();
+            List<PlantDTO> plantDTOs = new ArrayList<>();
+            for (Plant plant : plants) {
+                plantDTOs.add(new PlantDTO(plant));
+            }
+            return plantDTOs;
         }
-        return null; // return null if an error occurs
     }
-
 
     @Override
     public PlantDTO getById(Long id) {
         try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
             Plant plant = em.find(Plant.class, id);
-            if (plant != null) {
-                return new PlantDTO(plant);
-            }
-            em.getTransaction().commit();
-            return null;
+            return plant != null ? new PlantDTO(plant) : null;
         }
     }
 
     @Override
     public List<PlantDTO> getByType(String type) {
         try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            // Create query to get plants by their type
-            TypedQuery<Plant> q = em.createQuery("SELECT p FROM Plant p WHERE p.plantType = :type", Plant.class);
-            q.setParameter("type", type);
-
-            // Fetch list of plants with the given type
-            List<Plant> plantsWithType = q.getResultList(); // Use getResultList() to directly get the list
-
-            // Initialize a list to store PlantDTOs
-            List<PlantDTO> plantDTOList = new ArrayList<>();
-
-            // Convert Plant entities to PlantDTO and add them to the list
-            for (Plant plant : plantsWithType) {
-                PlantDTO dto = new PlantDTO(plant);
-                plantDTOList.add(dto);
+            TypedQuery<Plant> query = em.createQuery("SELECT p FROM Plant p WHERE p.plantType = :type", Plant.class);
+            query.setParameter("type", type);
+            List<Plant> plants = query.getResultList();
+            List<PlantDTO> plantDTOs = new ArrayList<>();
+            for (Plant plant : plants) {
+                plantDTOs.add(new PlantDTO(plant));
             }
-
-            em.getTransaction().commit();
-
-            // Return the list of PlantDTOs
-            return plantDTOList;
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            return plantDTOs;
         }
-        return null; // Return null in case of an exception
-
     }
 
     @Override
     public PlantDTO add(PlantDTO dto) {
-
-        Plant plant = dto.getPlantAsEntity();
-
+        Plant plant = new Plant(dto);
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            em.persist(plant);
+            em.persist(plant); // Persist the new plant entity
             em.getTransaction().commit();
-
-            dto.setId(plant.getId());
-            return dto;
-
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-            System.out.println("Could not add/create a new plant form dao in database" + e.getMessage());
-            return null;
+            return new PlantDTO(plant); // Return DTO with the newly assigned ID
+        } catch (Exception e) {
+            // Handle exceptions such as validation errors, etc.
+            throw new RuntimeException("Error adding plant: " + e.getMessage(), e);
         }
-
     }
 
     @Override
@@ -111,71 +74,66 @@ public class PlantDAO implements IDAO<PlantDTO> {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Plant plant = em.find(Plant.class, id);
-            em.remove(plant);
+            if (plant != null) {
+                em.remove(plant); // Remove the plant entity
+            }
             em.getTransaction().commit();
-        }catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            // Handle exceptions
+            throw new RuntimeException("Error deleting plant: " + e.getMessage(), e);
         }
-
     }
 
-    @Override
-    public List<PlantDTO> shortPlants() {
+    // Extra methods not in IDAO
+
+    public PlantDTO deletePlant(int id) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-
-            List<PlantDTO> plants = getAll();
-
-            plants = plants.stream()
-                    .filter(plant -> plant.getMaxHeight() <= 100)
-                    .toList();
-
+            Plant plant = em.find(Plant.class, (long) id);
+            if (plant != null) {
+                PlantDTO plantDTO = new PlantDTO(plant); // Create DTO before removing
+                em.remove(plant);
+                em.getTransaction().commit();
+                return plantDTO; // Return deleted plant as DTO
+            }
             em.getTransaction().commit();
-            return plants;
+            return null; // Return null if plant not found
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error deleting plant: " + e.getMessage(), e);
         }
-        return null;
     }
 
-    @Override
-    public List<PlantDTO> sortedPlants() {
+    public ResellerDTO addPlantToReseller(int resellerId, int plantId) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-
-            List<PlantDTO> plants = getAll();
-
-            plants = plants.stream()
-                    .sorted(Comparator.comparing(PlantDTO::getName))
-                    .toList();
-
+            Reseller reseller = em.find(Reseller.class, (long) resellerId);
+            Plant plant = em.find(Plant.class, (long) plantId);
+            if (reseller != null && plant != null) {
+                reseller.getPlants().add(plant); // Add plant to reseller
+                em.persist(reseller); // Update reseller in the database
+                em.getTransaction().commit();
+                return new ResellerDTO(reseller); // Return updated reseller DTO
+            }
             em.getTransaction().commit();
-            return plants;
-
+            return null; // Return null if either reseller or plant not found
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error adding plant to reseller: " + e.getMessage(), e);
         }
-        return null;
     }
 
-    public List<String> plantNames() {
+    public List<PlantDTO> getPlantsByReseller(int resellerId) {
         try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-
-            List<PlantDTO> plants = getAll();
-
-            List<String> plantNames = plants.stream()
-                    .map(PlantDTO::getName)
-                    .toList();
-
-            em.getTransaction().commit();
-            return plantNames;
-
+            Reseller reseller = em.find(Reseller.class, (long) resellerId);
+            if (reseller != null) {
+                List<PlantDTO> plantDTOs = new ArrayList<>();
+                for (Plant plant : reseller.getPlants()) {
+                    plantDTOs.add(new PlantDTO(plant)); // Convert each plant to DTO
+                }
+                return plantDTOs;
+            }
+            return new ArrayList<>(); // Return empty list if reseller not found
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error fetching plants by reseller: " + e.getMessage(), e);
         }
-
-        return null;
     }
-
 }

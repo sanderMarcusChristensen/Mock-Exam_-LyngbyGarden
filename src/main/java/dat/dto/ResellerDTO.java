@@ -8,29 +8,19 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
+@Builder
 public class ResellerDTO {
+    private Long id;      // Unique identifier for the reseller
+    private String name;  // Name of the reseller
+    private String address; // Address of the reseller
+    private String phone; // Phone number of the reseller
 
-    private Long id;
-    private String name;
-    private String address;
-    private String phone;
-
-    @Builder
-    public ResellerDTO (Long id, String name, String address, String phone) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.phone = phone;
-    }
-
-    public Reseller getResellerAsEntity(){
-
-        return Reseller.builder()
-                .id(id)
-                .address(address)
-                .phone(phone)
-                .name(name)
-                .build();
+    // Constructor to create ResellerDTO from a Reseller entity
+    public ResellerDTO(Reseller entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.address = entity.getAddress();
+        this.phone = entity.getPhone();
     }
 }

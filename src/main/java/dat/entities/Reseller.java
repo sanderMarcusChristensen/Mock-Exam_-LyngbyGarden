@@ -10,45 +10,32 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-
+@Builder
 public class Reseller {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generate ID
+    private Long id;            // Unique identifier
+    private String name;        // Name of the reseller
+    private String address;     // Address of the reseller
+    private String phone;       // Phone number of the reseller
 
-    private String name;
-    private String address;
-    private String phone;
-
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.ALL) // Bidirectional many-to-many relationship
     @JoinTable(
-            name = "reseller_plant",
-            joinColumns = @JoinColumn(name = "reseller_id"),
-            inverseJoinColumns = @JoinColumn(name = "plant_id")
+            name = "reseller_plant",  // Join table name
+            joinColumns = @JoinColumn(name = "reseller_id"), // Reseller column
+            inverseJoinColumns = @JoinColumn(name = "plant_id") // Plant column
     )
-    private List<Plant> plants;
+    private List<Plant> plants = new ArrayList<>(); // Initialize with an empty list
 
-    @Builder
-    public Reseller(Long id, String name, String address, String phone) {
-        this.name = name;
-        this.address = address;
-        this.phone = phone;
-        this.id = id;
+    // Constructor to create Reseller from ResellerDTO
+    public Reseller(ResellerDTO dto) {
+        this.id = dto.getId();
+        this.name = dto.getName();
+        this.address = dto.getAddress();
+        this.phone = dto.getPhone();
     }
-
-    public ResellerDTO getResellerAsDTO(){
-        return ResellerDTO.builder()
-                .id(id)
-                .name(name)
-                .address(address)
-                .phone(phone)
-                .build();
-    }
-
 }

@@ -1,26 +1,26 @@
 package dat.config;
 
 import dat.dao.PlantDAO;
-import dat.dao.ResellerDAO;
 import dat.dto.PlantDTO;
 import dat.dto.ResellerDTO;
 import jakarta.persistence.EntityManagerFactory;
 
 public class DatabasePopulator {
+    /*
 
     private final PlantDAO plantDAO;
-    private final ResellerDAO resellerDAO;
+   // private final ResellerDAO resellerDAO;
 
     public DatabasePopulator(EntityManagerFactory emf) {
         this.plantDAO = new PlantDAO(emf);
-        this.resellerDAO = new ResellerDAO(emf);
+       // this.resellerDAO = new ResellerDAO(emf);
     }
 
     public void populateDatabase() {
         // Add dummy plants to the database
-        PlantDTO plant1 = new PlantDTO(null, "Rose", "Red Beauty", 250.00, 400);
-        PlantDTO plant2 = new PlantDTO(null, "Lily", "White Elegance", 300.00, 500);
-        PlantDTO plant3 = new PlantDTO(null, "Sunflower", "Golden Giant", 150.00, 300);
+        PlantDTO plant1 = new PlantDTO(null, "Rose", "Red Beauty", 250, 400);
+        PlantDTO plant2 = new PlantDTO(null, "Lily", "White Elegance", 300, 500);
+        PlantDTO plant3 = new PlantDTO(null, "Sunflower", "Golden Giant", 150, 300);
 
         plantDAO.add(plant1);
         plantDAO.add(plant2);
@@ -30,9 +30,9 @@ public class DatabasePopulator {
         ResellerDTO r2 = new ResellerDTO(null,"Glostrup","<Tværvej 39 >","32233232");
         ResellerDTO r3 = new ResellerDTO(null,"Holbæk","Stenhusvej 49","594435093");
 
-        resellerDAO.create(r1);
-        resellerDAO.create(r2);
-        resellerDAO.create(r3);
+        //resellerDAO.create(r1);
+        //resellerDAO.create(r2);
+        //resellerDAO.create(r3);
 
     }
 
@@ -52,4 +52,6 @@ public class DatabasePopulator {
 
         System.out.println("Database population complete.");
     }
+
+     */
 }

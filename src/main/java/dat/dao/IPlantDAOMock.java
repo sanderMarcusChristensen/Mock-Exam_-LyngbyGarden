@@ -4,11 +4,12 @@ import dat.dto.PlantDTO;
 
 import java.util.List;
 
-public interface IPlantDAOMock {
+public interface IPlantDAOMock<T> {
 
-    List<PlantDTO> getAll();
-    PlantDTO getById(int id);
-    List<PlantDTO> getByType(String type);
-    PlantDTO add(PlantDTO plant);
+    List<T> getAll();
+    T getById(int id);
+    List<T> getByType(String type);
+    T add(T t);
+
 
 }

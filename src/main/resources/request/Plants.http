@@ -3,7 +3,7 @@ GET localhost:7007/api/mock
 
 ###
 
-GET localhost:7007/api/mock/1
+GET localhost:7007/api/mock/999
 
 ###
 
@@ -11,10 +11,10 @@ POST localhost:7007/api/mock
 Content-Type: application/json
 
 {
-  "name": "Tulip",
+  "name": "Batman",
   "plantType": "Spring Bloom",
   "price": 180.00,
-  "maxHeight": 300
+  "maxHeight": 200
 }
 
 ###
@@ -32,7 +32,7 @@ GET localhost:7007/api/plant
 ###
 
 #get plant with id = 1
-GET localhost:7007/api/plant/1
+GET localhost:7007/api/plant/999
 
 ###
 
@@ -41,7 +41,7 @@ POST localhost:7007/api/plant
 Content-Type: application/json
 
 {
-  "name": "Tulip",
+  "name": "",
   "plantType": "Spring Bloom",
   "price": 180.00,
   "maxHeight": 300

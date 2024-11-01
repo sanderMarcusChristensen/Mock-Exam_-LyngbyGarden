@@ -11,8 +11,8 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.cfg.Configuration;
 import java.util.Properties;
 
-import static dat.util.ApiProperties.DB_PASS;
-import static dat.util.ApiProperties.DB_USER;
+import static dat.utils.ApiProperties.DB_PASS;
+import static dat.utils.ApiProperties.DB_USER;
 
 /**
  * Purpose: This class is used to configure Hibernate and create an EntityManagerFactory.

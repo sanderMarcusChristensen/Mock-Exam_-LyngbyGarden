@@ -20,6 +20,13 @@ public class ExceptionController {
 
     }
 
+    public void exceptionHandler(Exception e, Context ctx) {
+        log.error(ctx.attribute("requestInfo") + " " + ctx.res().getStatus() + " " + e.getMessage());
+        ctx.status(500);
+        ctx.json(new Message(500, e.getMessage()));
+    }
+
+
 
 }
 

@@ -1,9 +1,11 @@
 package dat.controller;
 
+import dat.config.HibernateConfig;
 import dat.dao.PlantDAOMock;
 import dat.dto.PlantDTO;
 import dat.exceptions.ApiException;
 import io.javalin.http.Context;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
@@ -11,37 +13,38 @@ import java.util.List;
 public class MockController implements IController{
 
     public PlantDAOMock dao;
+    EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory("lyngbygarden");
 
     public MockController(PlantDAOMock dao) {
-        this.dao = dao;
+        this.dao = PlantDAOMock.getInstance(emf);
     }
 
     @Override
     public void addPlant(Context ctx) {
 
         PlantDTO newPlant = ctx.bodyAsClass(PlantDTO.class); // Parse JSON into PlantDTO
-
-        if( newPlant.getPlantType().isEmpty()){
-            throw new IllegalArgumentException("Plant type cannot be empty");
-        }
-
-        if( newPlant.getMaxHeight() == 0){
-            throw new IllegalArgumentException("Plant max height cannot be 0");
-        }
-
-        if( newPlant.getPrice() == 0){
-            throw new IllegalArgumentException("Plant pris cannot be 0");
-        }
-
-        if( newPlant.getName() == null){
-            throw new IllegalArgumentException("Plant name cannot be null");
-        }
         PlantDTO addedPlant = dao.add(newPlant);
-        ctx.json(addedPlant);
-        ctx.status(201); // Created
+
+        if (addedPlant.getName().isEmpty()) {
+            throw new ApiException(400, "Plant name is empty");
+        }
+
+        if (addedPlant.getPlantType().isEmpty()) {
+            throw new ApiException(400, "Plant type is empty");
+        }
+
+        if (addedPlant.getMaxHeight() == 0) {
+            throw new ApiException(400, "Max height is empty");
+        }
+
+        if (addedPlant.getPrice() == 0){
+            throw new ApiException(400, "Price is empty");
+        }
+
+        ctx.res().setStatus(201);
+        ctx.json(addedPlant, PlantDTO.class);
+
     }
-
-
 
     @Override
     public void getAllPlants(Context ctx) {
@@ -60,17 +63,12 @@ public class MockController implements IController{
     @Override
     public void getPlantById(Context ctx) {
 
-        int id = Integer.parseInt(ctx.pathParam("id"));
+        int id = ctx.pathParamAsClass("id", Integer.class).check(this::validatePrimaryKey, "Not a valid id").get();
         PlantDTO plant = dao.getById(id);
-        if (plant != null) {
-            ctx.json(plant);
-            ctx.status(200); // OK
-        } else {
-            throw new ApiException(404,"plant with that id  not found");
-        }
+        ctx.res().setStatus(200);
+        ctx.json(plant, PlantDTO.class);
+
     }
-
-
 
     @Override
     public void getPlantByType(Context ctx) {
@@ -99,5 +97,9 @@ public class MockController implements IController{
     @Override
     public void getPlantNames(Context ctx) {
 
+    }
+
+    public boolean validatePrimaryKey(Integer integer) {
+        return dao.validatePrimaryKey(integer);
     }
 }
