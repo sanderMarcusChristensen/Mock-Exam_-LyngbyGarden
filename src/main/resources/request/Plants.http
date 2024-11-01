@@ -1,3 +1,31 @@
+# ------------------------ Mock Endpoints ------------------------
+GET localhost:7007/api/mock
+
+###
+
+GET localhost:7007/api/mock/1
+
+###
+
+POST localhost:7007/api/mock
+Content-Type: application/json
+
+{
+  "name": "Tulip",
+  "plantType": "Spring Bloom",
+  "price": 180.00,
+  "maxHeight": 300
+}
+
+###
+
+GET localhost:7007/api/mock/type/Rose
+
+
+
+# ------------------------ Plant Endpoints ------------------------
+
+###
 #get all plants
 GET localhost:7007/api/plant
 
@@ -27,5 +55,4 @@ GET localhost:7007/api/plant/type/Rose
 
 ###
 
-#DONT WORK
-GET http://localhost:7007/api/plant/names
+

@@ -16,24 +16,15 @@ public class PlantRoutes {
     private final PlantDAO dao = new PlantDAO(emf);
     private final PlantController plantController = new PlantController(dao);
 
-public EndpointGroup getPlantRoutes(){
+    public EndpointGroup getPlantRoutes() {
         return () -> {
-            get("/",plantController :: getAllPlants);
-            get("/{id}", plantController :: getPlantById);
-            get("/type/{type}", plantController :: getPlantByType);
-            post("/",plantController :: addPlant);
-
-
-            // needs to be in a reseller controller
-            //Dont work
-
-            get("/{names}",plantController :: getPlantNames);
-            get("/short",plantController :: getShortPlants);
-            get("/sorted",plantController :: getSortedPlants);
-
+            get("/", plantController::getAllPlants);
+            get("/{id}", plantController::getPlantById);
+            get("/type/{type}", plantController::getPlantByType);
+            post("/", plantController::addPlant);
         };
 
-}
+    }
 
 
 }

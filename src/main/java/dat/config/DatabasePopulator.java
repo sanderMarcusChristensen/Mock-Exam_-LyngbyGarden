@@ -1,12 +1,9 @@
-package dat.util;
+package dat.config;
 
-import dat.config.HibernateConfig;
 import dat.dao.PlantDAO;
 import dat.dao.ResellerDAO;
 import dat.dto.PlantDTO;
 import dat.dto.ResellerDTO;
-import dat.entities.Plant;
-import dat.entities.Reseller;
 import jakarta.persistence.EntityManagerFactory;
 
 public class DatabasePopulator {
